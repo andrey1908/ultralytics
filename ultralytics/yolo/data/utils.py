@@ -219,22 +219,22 @@ def check_det_dataset(dataset, autodownload=True):
     path = Path(extract_dir or data.get('path') or Path(data.get('yaml_file', '')).parent)  # dataset root
 
     if not path.is_absolute():
-        path = (DATASETS_DIR / path).resolve()
+        path = (DATASETS_DIR / path).absolute()
         data['path'] = path  # download scripts
     for k in 'train', 'val', 'test':
         if data.get(k):  # prepend path
             if isinstance(data[k], str):
-                x = (path / data[k]).resolve()
+                x = (path / data[k]).absolute()
                 if not x.exists() and data[k].startswith('../'):
-                    x = (path / data[k][3:]).resolve()
+                    x = (path / data[k][3:]).absolute()
                 data[k] = str(x)
             else:
-                data[k] = [str((path / x).resolve()) for x in data[k]]
+                data[k] = [str((path / x).absolute()) for x in data[k]]
 
     # Parse yaml
     train, val, test, s = (data.get(x) for x in ('train', 'val', 'test', 'download'))
     if val:
-        val = [Path(x).resolve() for x in (val if isinstance(val, list) else [val])]  # val path
+        val = [Path(x).absolute() for x in (val if isinstance(val, list) else [val])]  # val path
         if not all(x.exists() for x in val):
             msg = f"\nDataset '{dataset}' not found ⚠️, missing paths %s" % [str(x) for x in val if not x.exists()]
             if s and autodownload:
@@ -276,7 +276,7 @@ def check_cls_dataset(dataset: str):
             'nc': Number of classes in the dataset
             'names': List of class names in the dataset
     """
-    data_dir = (DATASETS_DIR / dataset).resolve()
+    data_dir = (DATASETS_DIR / dataset).absolute()
     if not data_dir.is_dir():
         LOGGER.info(f'\nDataset not found ⚠️, missing path {data_dir}, attempting download...')
         t = time.time()
@@ -397,7 +397,7 @@ class HUBDatasetStats():
         # Save, print and return
         if save:
             stats_path = self.hub_dir / 'stats.json'
-            LOGGER.info(f'Saving {stats_path.resolve()}...')
+            LOGGER.info(f'Saving {stats_path.absolute()}...')
             with open(stats_path, 'w') as f:
                 json.dump(self.stats, f)  # save stats.json
         if verbose:
