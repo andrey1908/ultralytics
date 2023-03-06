@@ -313,8 +313,7 @@ class YOLO:
         self.task = overrides.get('task') or self.task
         self.trainer = TASK_MAP[self.task][1](overrides=overrides)
         if not overrides.get('resume'):  # manually set model only if not resuming
-            self.trainer.model = self.trainer.get_model(weights=self.model if self.ckpt else None, cfg=self.model.yaml)
-            self.model = self.trainer.model
+            self.trainer.model = self.model
         self.trainer.hub_session = self.session  # attach optional HUB session
         self.trainer.train()
         # update model and cfg after training
