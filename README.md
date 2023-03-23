@@ -20,3 +20,8 @@ Train (results in runs):
 ```
 model.train(data='coco128-seg.yaml', epochs=20, save_period=1, close_mosaic=20, lr0=0.01, lrf=1, warmup_epochs=0)
 ```
+
+Inference:
+```
+results = model('img.jpg', save=True, show=False)
+```
