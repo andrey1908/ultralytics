@@ -724,7 +724,7 @@ def preprocess_results(results, out_shape):
 
     if result.masks is None:
         assert result.boxes.boxes.numel() == 0
-        return list(), list(), list()
+        return list(), list(), list(), list()
 
     boxes = result.boxes.boxes.cpu().numpy()
     masks = result.masks.masks.cpu().numpy()
@@ -732,12 +732,16 @@ def preprocess_results(results, out_shape):
 
     scores = boxes[:, 4]
     classes_ids = boxes[:, 5].astype(int)
+    boxes = boxes[:, :4]
     masks = masks.astype(np.uint8)
 
     height, width = out_shape
     mask_height, mask_width = masks.shape[1:]
+    scaled_boxes = scale_boxes((mask_height, mask_width), boxes, (height, width))
+    scaled_boxes = scaled_boxes.astype(int)
+
     masks = masks.transpose(1, 2, 0)
     scaled_masks = scale_image((mask_height, mask_width), masks, (height, width))
     scaled_masks = scaled_masks.transpose(2, 0, 1)
 
-    return scores, classes_ids, scaled_masks
+    return scores, classes_ids, scaled_boxes, scaled_masks

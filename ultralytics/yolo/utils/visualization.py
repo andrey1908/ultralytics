@@ -6,7 +6,7 @@ from ultralytics.yolo.utils.ops import preprocess_results
 def draw_results(image, results, min_score=0.7, palette=((0, 0, 255),)):
     assert len(results) == 1
     height, width = image.shape[:2]
-    scores, classes_ids, masks = preprocess_results(results, (height, width))
+    scores, classes_ids, boxes, masks = preprocess_results(results, (height, width))
 
     overlay = image.copy()
     for i, (score, class_id, mask) in enumerate(zip(scores, classes_ids, masks)):
