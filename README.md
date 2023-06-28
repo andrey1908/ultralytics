@@ -16,12 +16,13 @@ weights = torch.load('yolov8n-seg.pt')['model']
 model.model.load(weights)
 ```
 
-Train (results in runs):
+Train (results in "runs" folder):
 ```
+# default parameters in "ultralytics/yolo/cfg/default.yaml"
 model.train(data='coco128-seg.yaml', epochs=20, save_period=1, close_mosaic=20, lr0=0.01, lrf=1, warmup_epochs=0)
 ```
 
-Inference:
+Inference (results in "runs" folder):
 ```
 results = model('img.jpg', save=True, show=False)
 ```
