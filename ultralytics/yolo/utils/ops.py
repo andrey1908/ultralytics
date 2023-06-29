@@ -748,4 +748,5 @@ def preprocess_results(results, out_shape):
     scaled_masks = scale_image((mask_height, mask_width), masks, (height, width))
     scaled_masks = scaled_masks.transpose(2, 0, 1)
 
+    # scaled_boxes - (xyxy) not including last
     return scores, classes_ids, scaled_boxes, scaled_masks
