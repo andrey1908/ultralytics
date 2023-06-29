@@ -724,7 +724,11 @@ def preprocess_results(results, out_shape):
 
     if result.masks is None:
         assert result.boxes.boxes.numel() == 0
-        return list(), list(), list(), list()
+        scores = np.empty((0,))
+        classes_ids = np.empty((0,), dtype=int)
+        scaled_boxes = np.empty((0, 4), dtype=int)
+        scaled_masks = np.empty((0, *out_shape), dtype=np.uint8)
+        return scores, classes_ids, scaled_boxes, scaled_masks
 
     boxes = result.boxes.boxes.cpu().numpy()
     masks = result.masks.masks.cpu().numpy()
