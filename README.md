@@ -28,9 +28,13 @@ results = model('img.jpg', save=True, show=False)
 
 # or
 
-from ultralytics.yolo.utils.visualization import draw_results
+from ultralytics.yolo.utils.ops import preprocess_results
+from ultralytics.yolo.utils.visualization import draw_detections
 
 image = cv2.imread("path/to/image.jpg")
 results = model(image, save=False, show=False, verbose=False)
-draw_results(image, results)
+# assert len(results) == 1
+height, width = image.shape[:2]
+scores, classes_ids, boxes, masks = preprocess_results(results, (height, width))
+draw_detections(image, scores, classes_ids, boxes, masks, min_score=0.7)
 ```

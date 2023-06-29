@@ -1,13 +1,9 @@
 import numpy as np
 import cv2
-from ultralytics.yolo.utils.ops import preprocess_results
 
 
-def draw_results(image, results, min_score=0.7, palette=((0, 0, 255),)):
-    assert len(results) == 1
-    height, width = image.shape[:2]
-    scores, classes_ids, boxes, masks = preprocess_results(results, (height, width))
-
+def draw_detections(image, scores, classes_ids, boxes, masks,
+        min_score=0.7, palette=((0, 0, 255),)):
     overlay = image.copy()
     for i, (score, class_id, mask) in enumerate(zip(scores, classes_ids, masks)):
         if score < min_score:
