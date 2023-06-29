@@ -25,4 +25,12 @@ model.train(data='coco128-seg.yaml', epochs=20, save_period=1, close_mosaic=20, 
 Inference (results in "runs" folder):
 ```
 results = model('img.jpg', save=True, show=False)
+
+# or
+
+from ultralytics.yolo.utils.visualization import draw_results
+
+image = cv2.imread("path/to/image.jpg")
+results = model(image, save=False, show=False, verbose=False)
+draw_results(image, results)
 ```
