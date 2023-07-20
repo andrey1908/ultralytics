@@ -87,7 +87,7 @@ class DetectionTrainer(BaseTrainer):
 
     def progress_string(self):
         return ('\n' + '%11s' *
-                (4 + len(self.loss_names))) % ('Epoch', 'GPU_mem', *self.loss_names, 'Instances', 'Size')
+                (5 + len(self.loss_names))) % ('Epoch', 'GPU_mem', *self.loss_names, 'Instances', 'Size', 'LR')
 
     def plot_training_samples(self, batch, ni):
         plot_images(images=batch['img'],
