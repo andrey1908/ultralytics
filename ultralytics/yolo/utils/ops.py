@@ -718,7 +718,7 @@ def clean_str(s):
     return re.sub(pattern='[|@#!¡·$€%&()=?¿^*;:,¨´><+]', repl='_', string=s)
 
 
-def preprocess_results(results, out_shape):
+def preprocess_results(results, orig_shape):
     assert len(results) == 1  # only single image supported
     result = results[0]
 
@@ -727,7 +727,7 @@ def preprocess_results(results, out_shape):
         scores = np.empty((0,))
         classes_ids = np.empty((0,), dtype=int)
         boxes = np.empty((0, 4), dtype=int)
-        scaled_masks = np.empty((0, *out_shape), dtype=np.uint8)
+        scaled_masks = np.empty((0, *orig_shape), dtype=np.uint8)
         return scores, classes_ids, boxes, scaled_masks
 
     boxes = result.boxes.boxes.cpu().numpy()
@@ -739,7 +739,7 @@ def preprocess_results(results, out_shape):
     boxes = boxes[:, :4].astype(int)
     masks = masks.astype(np.uint8)
 
-    height, width = out_shape
+    height, width = orig_shape
     mask_height, mask_width = masks.shape[1:]
     masks = masks.transpose(1, 2, 0)
     scaled_masks = scale_image((mask_height, mask_width), masks, (height, width))
