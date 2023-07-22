@@ -558,8 +558,8 @@ class Albumentations:
             check_version(A.__version__, '1.0.3', hard=True)  # version requirement
 
             T = [
-                A.Blur(p=0.5),
-                A.MedianBlur(p=0.2),
+                A.Blur(p=0.3, blur_limit=3),
+                A.MedianBlur(p=0.0),
                 A.ToGray(p=0.01),
                 A.CLAHE(p=0.01),
                 A.RandomBrightnessContrast(p=0.0),
