@@ -724,7 +724,7 @@ def preprocess_results(results, orig_shape):
 
     if result.masks is None:
         assert result.boxes.boxes.numel() == 0
-        scores = np.empty((0,))
+        scores = np.empty((0,), dtype=float)
         classes_ids = np.empty((0,), dtype=int)
         boxes = np.empty((0, 4), dtype=int)
         scaled_masks = np.empty((0, *orig_shape), dtype=np.uint8)
@@ -734,7 +734,7 @@ def preprocess_results(results, orig_shape):
     masks = result.masks.masks.cpu().numpy()
     assert len(masks) == len(boxes)
 
-    scores = boxes[:, 4]
+    scores = boxes[:, 4].astype(float)
     classes_ids = boxes[:, 5].astype(int)
     boxes = boxes[:, :4].astype(int)
     masks = masks.astype(np.uint8)
