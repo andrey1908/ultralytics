@@ -32,6 +32,7 @@ from collections import defaultdict
 from pathlib import Path
 
 import cv2
+import numpy as np
 
 from ultralytics.nn.autobackend import AutoBackend
 from ultralytics.yolo.cfg import get_cfg
@@ -118,6 +119,12 @@ class BasePredictor:
         gen = self.stream_inference(source, model)
         for _ in gen:  # running CLI inference without accumulating any outputs (do not modify)
             pass
+
+    def warmup(self, model=None):
+        if not self.done_warmup:
+            source = np.zeros((1, 1, 3), dtype=np.uint8)
+            self.predict_cli(source, model)
+            self.done_warmup = True
 
     def setup_source(self, source):
         self.imgsz = check_imgsz(self.args.imgsz, stride=self.model.stride, min_dim=2)  # check image size

@@ -46,6 +46,8 @@ class YOLO:
         metrics (Any): The data for metrics.
 
     Methods:
+        warmup() -> None:
+            Warms model up.
         __call__(source=None, stream=False, **kwargs):
             Alias for the predict method.
         _new(cfg:str, verbose:bool=True) -> None:
@@ -184,6 +186,21 @@ class YOLO:
     def fuse(self):
         self._check_is_pytorch_model()
         self.model.fuse()
+
+    @smart_inference_mode()
+    def warmup(self):
+        overrides = self.overrides.copy()
+        overrides['mode'] = 'predict'
+        overrides['save'] = False
+        overrides['show'] = False
+        overrides['verbose'] = False
+        if not self.predictor:
+            self.task = overrides.get('task') or self.task
+            self.predictor = TASK_MAP[self.task][3](overrides=overrides)
+            self.predictor.setup_model(model=self.model)
+        else:  # only update args if predictor is already setup
+            self.predictor.args = get_cfg(self.predictor.args, overrides)
+        self.predictor.warmup()
 
     @smart_inference_mode()
     def predict(self, source=None, stream=False, **kwargs):
