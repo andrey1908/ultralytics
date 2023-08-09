@@ -23,7 +23,8 @@ Train (trained weights and figures will be in "runs" folder):
 #   to disable mosaic augmentation set 'close_mosaic' equal to epochs
 #   'nbs' parameter sets accumulated batch size
 #   to enable advanced augmentation install albumentations for python. Probabilities for albumentations augmentations can be adjusted in class named 'Albumentations'.
-#   you might want to freeze backbone of trained network. To do so for YOLOv8n, set requires_grad = False for all parameters with names starting not with 'model.22.'
+#   you might want to freeze backbone of trained network. To do so for YOLOv8n, set requires_grad = False for all parameters with names starting with 'model.9.' or less, or
+#       if you want to freeze backbone and FPN of YOLOv8n, set requires_grad = False for all parameters with names not starting with 'model.22.'
 #   if you run training from terminal, it will spam a lot of warnings. To suppress them you can run training in notebook (tested in vscode)
 model.train(data='coco128-seg.yaml', epochs=20, save_period=1, close_mosaic=20, lr0=0.01, lrf=1, warmup_epochs=0, batch=16, nbs=16)
 ```
