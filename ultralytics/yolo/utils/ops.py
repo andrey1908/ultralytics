@@ -512,7 +512,7 @@ def segments2boxes(segments):
     boxes = []
     for s in segments:
         x, y = s.T  # segment xy
-        boxes.append([x.min(), y.min(), x.max(), y.max()])  # cls, xyxy
+        boxes.append([np.nanmin(x), np.nanmin(y), np.nanmax(x), np.nanmax(y)])  # cls, xyxy
     return xyxy2xywh(np.array(boxes))  # cls, xywh
 
 
@@ -532,6 +532,16 @@ def resample_segments(segments, n=1000):
         x = np.linspace(0, len(s) - 1, n)
         xp = np.arange(len(s))
         segments[i] = np.concatenate([np.interp(x, xp, s[:, i]) for i in range(2)]).reshape(2, -1).T  # segment xy
+    return segments
+
+
+def pad_segments_with_nans(segments, n):
+    for i, s in enumerate(segments):
+        if len(s) > n:
+            raise RuntimeError("Trying to pad segment to smaller size")
+        pad_size = n - len(s)
+        pad = np.full((pad_size, 2), np.nan, dtype=s.dtype)
+        segments[i] = np.vstack((s, pad))
     return segments
 
 

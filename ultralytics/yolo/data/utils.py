@@ -134,6 +134,22 @@ def verify_image_label(args):
         return [None, None, None, None, None, nm, nf, ne, nc, msg]
 
 
+def split_polygons(polygons):
+    # polygons[i].shape - (M,) where M % 2 == 0
+    out_polygons = list()
+    for p in polygons:
+        nan_indices = np.argwhere(np.isnan(p))[:, 0]
+        assert len(nan_indices) % 2 == 0
+        nan_indices = np.append(nan_indices, len(p))
+        start_index = 0
+        for nan_index in nan_indices[::2]:
+            end_index = nan_index
+            if end_index - start_index > 0:
+                out_polygons.append(p[start_index:end_index])
+            start_index = end_index + 2
+    return out_polygons
+
+
 def polygon2mask(imgsz, polygons, color=1, downsample_ratio=1):
     """
     Args:
@@ -143,10 +159,10 @@ def polygon2mask(imgsz, polygons, color=1, downsample_ratio=1):
         downsample_ratio (int): downsample ratio
     """
     mask = np.zeros(imgsz, dtype=np.uint8)
-    polygons = np.asarray(polygons)
-    polygons = polygons.astype(np.int32)
-    shape = polygons.shape
-    polygons = polygons.reshape(shape[0], -1, 2)
+    polygons = split_polygons(polygons)
+    for i in range(len(polygons)):
+        polygons[i] = polygons[i].astype(np.int32)
+        polygons[i] = polygons[i].reshape(len(polygons[i]) // 2, 2)
     cv2.fillPoly(mask, polygons, color=color)
     nh, nw = (imgsz[0] // downsample_ratio, imgsz[1] // downsample_ratio)
     # NOTE: fillPoly firstly then resize is trying the keep the same way
